@@ -1,0 +1,7 @@
+﻿LIBRARY    "AddInNative.dll"
+
+EXPORTS
+GetClassObject
+DestroyObject
+GetClassNames
+
