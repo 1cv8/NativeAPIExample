@@ -15,12 +15,14 @@ CNativeXMLReader::CNativeXMLReader()
 
     initStaticMembers();
 }
+
 //---------------------------------------------------------------------------//
 CNativeXMLReader::~CNativeXMLReader()
 {
     dfCompDebugMsg("~CNativeXMLReader");
 
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::RetStrTo1C(WCHAR_T** wsRetVal, const wchar_t* wsSendVal, uint SendValLen)
 {
@@ -51,10 +53,12 @@ bool CNativeXMLReader::RetStrTo1C(WCHAR_T** wsRetVal, const wchar_t* wsSendVal, 
 
     return false;
 }
+
 //---------------------------------------------------------------------------//
 //Поиск в отсортированном массиве
 int CNativeXMLReader::massfind(wchar_t* massSmb, uint massLen, wchar_t symb)
 {
+    dfCompDebugMsg("    CNativeXMLReader::massfind");
     int i = 0;
     int n = massLen-1;
     int half;
@@ -76,22 +80,33 @@ int CNativeXMLReader::massfind(wchar_t* massSmb, uint massLen, wchar_t symb)
 
     return -1;
 }
+
 //---------------------------------------------------------------------------//
 inline long CNativeXMLReader::FindNameFromTree(stNmTreePoint* curTree, const WCHAR_T* wsName, uint NameLen)
 {
+    dfCompDebugMsg("  CNativeXMLReader::FindNameFromTree");
+
     if ((!curTree) || (!wsName))
+    {
+        dfCompDebugMsg("Cur tree or wsName is NULL");
         return -1;
+    };
 
     if (!NameLen)
         NameLen = ::wcslen(wsName)+1;
+
+   dfCompDebugMsg((char *)QString("Name len: %1").arg(wsName[NameLen]).toLocal8Bit().data());
 
     uint curPos = 0;
     stNmTreePoint* curPoint = curTree;
     int rez = -1;
     uint cLen = (NameLen-1);
+    dfCompDebugMsg((char *)QString("   clen: %1").arg(wsName[cLen]).toLocal8Bit().data());
 
     while(curPos < cLen)
     {
+        dfCompDebugMsg((char *)QString("   %1").arg(wsName[curPos]).toLocal8Bit().data());
+
         if (!curPoint->childcnt)
         {
             uint nextind = massfind(curPoint->symbols, curPoint->childcnt, wsName[curPos]);
@@ -138,7 +153,8 @@ inline long CNativeXMLReader::FindNameFromTree(stNmTreePoint* curTree, const WCH
 
 
     return rez;
-};
+}
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::Init(void* pConnection)
 {
@@ -147,6 +163,7 @@ bool CNativeXMLReader::Init(void* pConnection)
     m_iConnect = (IAddInDefBase*)pConnection;
     return m_iConnect != NULL;
 }
+
 //---------------------------------------------------------------------------//
 long CNativeXMLReader::GetInfo()
 {
@@ -154,12 +171,14 @@ long CNativeXMLReader::GetInfo()
 
     return dfCompVersionCA;
 }
+
 //---------------------------------------------------------------------------//
 void CNativeXMLReader::Done()
 {
     dfCompDebugMsg("Done");
 
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::RegisterExtensionAs(WCHAR_T** wsLanguageExt)
 {
@@ -167,6 +186,7 @@ bool CNativeXMLReader::RegisterExtensionAs(WCHAR_T** wsLanguageExt)
 
     return RetStrTo1C(wsLanguageExt, g_Comp1CLocNameCA, dfComp1CLocNameCALen);
 }
+
 //---------------------------------------------------------------------------//
 long CNativeXMLReader::GetNProps()
 {
@@ -174,19 +194,29 @@ long CNativeXMLReader::GetNProps()
 
     return dfCompPropNumCA;
 }
+
 //---------------------------------------------------------------------------//
 long CNativeXMLReader::FindProp(const WCHAR_T* wsPropName)
 {
     dfCompDebugMsg("FindProp");
 
     if (!wsPropName)
+    {
+        dfCompDebugMsg("      wsPropName is NULL!!!");
         return -1;
+    };
 
     if ((uint16_t)wsPropName[0] < dfSeparateSymb)
+    {
+        dfCompDebugMsg("      finding from eng names...");
         return FindNameFromTree(t_PropNamesCA, wsPropName);
-    else
+    }else
+    {
+        dfCompDebugMsg("      finding from loc names...");
         return FindNameFromTree(t_PropNamesLocCA, wsPropName);
+    };
 }
+
 //---------------------------------------------------------------------------//
 const WCHAR_T* CNativeXMLReader::GetPropName(long lPropNum, long lPropAlias)
 {
@@ -207,8 +237,9 @@ const WCHAR_T* CNativeXMLReader::GetPropName(long lPropNum, long lPropAlias)
         return 0;
     }
 
-    return 0;
+    return 0;    
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::GetPropVal(const long lPropNum, tVariant* pvarPropVal)
 {
@@ -216,6 +247,7 @@ bool CNativeXMLReader::GetPropVal(const long lPropNum, tVariant* pvarPropVal)
 
     return false;
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::SetPropVal(const long lPropNum, tVariant* varPropVal)
 {
@@ -223,6 +255,7 @@ bool CNativeXMLReader::SetPropVal(const long lPropNum, tVariant* varPropVal)
 
     return false;
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::IsPropReadable(const long lPropNum)
 {
@@ -230,6 +263,7 @@ bool CNativeXMLReader::IsPropReadable(const long lPropNum)
 
     return true;
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::IsPropWritable(const long lPropNum)
 {
@@ -237,6 +271,7 @@ bool CNativeXMLReader::IsPropWritable(const long lPropNum)
 
     return false;
 }
+
 //---------------------------------------------------------------------------//
 long CNativeXMLReader::GetNMethods()
 {
@@ -244,21 +279,31 @@ long CNativeXMLReader::GetNMethods()
 
     return dfCompMethodNumCA;
 }
+
 //---------------------------------------------------------------------------//
 long CNativeXMLReader::FindMethod(const WCHAR_T* wsMethodName)
 {
     dfCompDebugMsg("FindMethod");
 
     if (!wsMethodName)
+    {
+        dfCompDebugMsg("      wsMethodName is NULL!!!");
         return -1;
+    };
 
     if ((uint16_t)wsMethodName[0] < dfSeparateSymb)
+    {
+        dfCompDebugMsg("      finding from eng names...");
         return FindNameFromTree(t_MethodNamesCA, wsMethodName);
-    else
+    }else
+    {
+        dfCompDebugMsg("      finding from loc names...");
         return FindNameFromTree(t_MethodNamesLocCA, wsMethodName);
-    return -1;
+    }
 
+    return -1;
 }
+
 //---------------------------------------------------------------------------//
 const WCHAR_T* CNativeXMLReader::GetMethodName(const long lMethodNum, 
                             const long lMethodAlias)
@@ -282,6 +327,7 @@ const WCHAR_T* CNativeXMLReader::GetMethodName(const long lMethodNum,
 
     return 0;
 }
+
 //---------------------------------------------------------------------------//
 long CNativeXMLReader::GetNParams(const long lMethodNum)
 {
@@ -289,6 +335,7 @@ long CNativeXMLReader::GetNParams(const long lMethodNum)
 
     return 0;
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::GetParamDefValue(const long lMethodNum, const long lParamNum,
                           tVariant *pvarParamDefValue)
@@ -297,6 +344,7 @@ bool CNativeXMLReader::GetParamDefValue(const long lMethodNum, const long lParam
 
     return false;
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::HasRetVal(const long lMethodNum)
 {
@@ -304,6 +352,7 @@ bool CNativeXMLReader::HasRetVal(const long lMethodNum)
 
     return false;
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::CallAsProc(const long lMethodNum,
                     tVariant* paParams, const long lSizeArray)
@@ -314,6 +363,7 @@ bool CNativeXMLReader::CallAsProc(const long lMethodNum,
     return true;
 
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::CallAsFunc(const long lMethodNum,
                 tVariant* pvarRetValue, tVariant* paParams, const long lSizeArray)
@@ -323,6 +373,7 @@ bool CNativeXMLReader::CallAsFunc(const long lMethodNum,
     return true;
 
 }
+
 //---------------------------------------------------------------------------//
 void CNativeXMLReader::SetLocale(const WCHAR_T* loc)
 {
@@ -351,6 +402,7 @@ void CNativeXMLReader::SetLocale(const WCHAR_T* loc)
     delete[] mbstr;
 #endif
 }
+
 //---------------------------------------------------------------------------//
 bool CNativeXMLReader::setMemManager(void* mem)
 {
@@ -358,33 +410,46 @@ bool CNativeXMLReader::setMemManager(void* mem)
     m_iMemory = (IMemoryManager*)mem;
     return m_iMemory != 0;
 }
+
 //---------------------------------------------------------------------------//
 void CNativeXMLReader::Destroy()
 {
     dfCompDebugMsg("Destroy");
     delete this;
 }
+
 //---------------------------------------------------------------------------//
 void CNativeXMLReader::initStaticMembers()
 {
+    initCompPropNamesTree();
+    initCompPropNamesTreeLoc();
+    initCompPropInfo();
 
+    initCompFuncNamesTree();
+    initCompFuncNamesTreeLoc();
+    initCompFuncInfo();
 }
 
 void CNativeXMLReader::initCompFuncNamesTree()
 {
 }
+
 void CNativeXMLReader::initCompFuncNamesTreeLoc()
 {
 }
+
 void CNativeXMLReader::initCompPropNamesTree()
 {
 }
+
 void CNativeXMLReader::initCompPropNamesTreeLoc()
 {
 }
+
 void CNativeXMLReader::initCompFuncInfo()
 {
 }
+
 void CNativeXMLReader::initCompPropInfo()
 {
 }

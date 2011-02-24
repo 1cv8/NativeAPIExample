@@ -18,10 +18,17 @@
 //#define dfCompDebug 1                                                       //
 ////////////////////////////////////////////////////////////////////////////////
 
+#define dfCompDebug 1
+
 #ifdef dfCompDebug
+
+#include "LogTools.h"
 #define dfCompDebugMsg(X) SetLog(X)
+
 #else
+
 #define dfCompDebugMsg(X)
+
 #endif
 ////////////////////////////////////////////////////////////////////////////////
 // <<<< Определяем признак и структуры для отладки(записи лога) <<<<          //
