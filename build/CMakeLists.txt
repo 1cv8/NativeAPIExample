@@ -8,6 +8,7 @@ set (SOURCE_PATH
 set (HEADERS
 	${SOURCE_PATH}/AddInNative.h
 	${SOURCE_PATH}/dllmain.h
+	${SOURCE_PATH}/QMyXmlReader.h
 	${SOURCE_PATH}/stdafx.h
 	${SOURCE_PATH}/LogTools.h
 	../includes/ComponentBase.h
@@ -16,6 +17,7 @@ set (HEADERS
 set (SOURCES
 	${SOURCE_PATH}/AddInNative.cpp
 	${SOURCE_PATH}/dllmain.cpp
+	${SOURCE_PATH}/QMyXmlReader.cpp
 	${SOURCE_PATH}/stdafx.cpp
 	${SOURCE_PATH}/LogTools.cpp)
 
