@@ -2,12 +2,21 @@
 #define __QMYXMLREADER_H__
 
 #include <QObject>
+#include <QIODevice>
 
 class QMyXmlReader : QObject
 {
     Q_OBJECT
 
+private:
+
+    QMyXmlReader(QMyXmlReader cp);
+
 public:
+    QMyXmlReader();
+    ~QMyXmlReader();
+
+
     bool OpenFile(QString filename);
     bool Close();
     bool Read();
@@ -32,6 +41,11 @@ public:
 
 private:
     bool fileisopen;
+
+    QIODevice *device;
+    bool deleteDevice;
+
+
 
 };
 
